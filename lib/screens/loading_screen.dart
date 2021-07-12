@@ -1,11 +1,13 @@
-import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:myweatherapp/screens/city_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'location_screen.dart';
+import 'package:myweatherapp/services/location.dart';
+import 'package:http/http.dart';
+import 'package:myweatherapp/services/networking.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -15,13 +17,28 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  var currentValue = "";
+  double? lat;
+  double? lon;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currentLocationWeatherData();
+  }
 
-  void getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-    currentValue =
-        position.latitude.toString() + " and " + position.longitude.toString();
+  void currentLocationWeatherData() async {
+    UserLocation userLocation = UserLocation();
+    await userLocation.getLocation;
+    lon = userLocation.longtitude;
+    lat = userLocation.latitude;
+    AnyNetworkData networkData = AnyNetworkData(
+        url:
+            "https://api.weatherbit.io/v2.0/current?lat=$lat&lon=$lon&key=7a20949786ad47fe84f5621842568b80");
+
+    var result = await networkData.getData();
+    double temprature = result['data'][0]['temp'];
+    String timeZone = result['data'][0]['timezone'];
+    
   }
 
   @override
@@ -32,22 +49,20 @@ class _LoadingScreenState extends State<LoadingScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-              child: ElevatedButton(
-            onPressed: () {
-              setState(() {
-                getCurrentLocation();
-              });
-            },
-            child: Text("GetCurrentLocation"),
-          )),
-          Expanded(
-              child: (currentValue == "")
-                  ? SpinKitWave(
-                      size: 100,
-                      color: Colors.pink,
-                    )
-                  : Text("$currentValue"))
+          // Expanded(
+          //     child: ElevatedButton(
+          //   onPressed: () {
+          //     setState(() {});
+          //   },
+          //   child: Text("GetCurrentLocation"),
+          // )),
+          // Expanded(
+          //     child: (currentValue == "")
+          //         ? SpinKitWave(
+          //             size: 100,
+          //             color: Colors.pink,
+          //           )
+          //         : Text("$currentValue"))
         ],
       ),
     ));
