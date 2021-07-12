@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myweatherapp/utilities/constants.dart';
 
 class CityScreen extends StatefulWidget {
+  CityScreen({required this.result});
+  final String result;
   @override
   _CityScreenState createState() => _CityScreenState();
 }
@@ -24,7 +26,9 @@ class _CityScreenState extends State<CityScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: Icon(
                     Icons.arrow_back_ios,
                     size: 50.0,
