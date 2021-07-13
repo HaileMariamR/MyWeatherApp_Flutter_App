@@ -1,14 +1,39 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:myweatherapp/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  LocationScreen({required this.result});
+  final result;
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
+//  double temprature = result['data'][0]['temp'];
+//   String timeZone = result['data'][0]['timezone'];
 
 class _LocationScreenState extends State<LocationScreen> {
+  double temp = 0.0;
+  int condition = 0;
+  String cityName = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateUi(widget.result);
+  }
+
+  void updateUi(dynamic weatherdata) {
+    temp = weatherdata['main']['temp'];
+    condition = weatherdata['weather'][0]['id'];
+    cityName = weatherdata['name'];
+  }
+
   @override
   Widget build(BuildContext context) {
+    double temp = widget.result['data'][0]['temp'];
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -51,7 +76,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temp°',
                       style: kTempTextStyle,
                     ),
                     Text(

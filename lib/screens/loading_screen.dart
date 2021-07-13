@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart';
 import 'package:myweatherapp/screens/city_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -28,42 +29,29 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   void currentLocationWeatherData() async {
     UserLocation userLocation = UserLocation();
-    await userLocation.getLocation;
-    lon = userLocation.longtitude;
-    lat = userLocation.latitude;
+    Position currentLocation = await userLocation.getLocation();
+    lon = currentLocation.longitude;
+    lat = currentLocation.latitude;
     AnyNetworkData networkData = AnyNetworkData(
         url:
-            "https://api.weatherbit.io/v2.0/current?lat=$lat&lon=$lon&key=7a20949786ad47fe84f5621842568b80");
+            "api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=8b7f58a68137c0497d75668ddf58a1ba&units=metric");
 
     var result = await networkData.getData();
-    double temprature = result['data'][0]['temp'];
-    String timeZone = result['data'][0]['timezone'];
-    
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LocationScreen(
+                  result: result,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Expanded(
-          //     child: ElevatedButton(
-          //   onPressed: () {
-          //     setState(() {});
-          //   },
-          //   child: Text("GetCurrentLocation"),
-          // )),
-          // Expanded(
-          //     child: (currentValue == "")
-          //         ? SpinKitWave(
-          //             size: 100,
-          //             color: Colors.pink,
-          //           )
-          //         : Text("$currentValue"))
-        ],
+      child: SpinKitRing(
+        color: Colors.white,
+        size: 100,
       ),
     ));
   }

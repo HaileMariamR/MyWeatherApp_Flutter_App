@@ -4,14 +4,22 @@ class UserLocation {
   double? latitude;
   double? longtitude;
 
-  void getLocation() async {
+  Future<Position> getLocation() async {
     try {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
-      latitude = position.latitude;
-      longtitude = position.longitude;
+      return position;
     } catch (e) {
       print("$e");
+      return Position(
+          longitude: 0.0,
+          latitude: 0.0,
+          timestamp: DateTime.now(),
+          accuracy: 0.0,
+          altitude: 0.0,
+          heading: 0.0,
+          speed: 0.0,
+          speedAccuracy: 0.0);
     }
   }
 }
