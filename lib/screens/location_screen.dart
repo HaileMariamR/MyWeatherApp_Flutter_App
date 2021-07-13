@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:myweatherapp/utilities/constants.dart';
+import 'package:myweatherapp/screens/city_screen.dart';
 import 'package:myweatherapp/services/weather.dart';
+import 'package:myweatherapp/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
   LocationScreen({required this.result});
@@ -10,42 +11,23 @@ class LocationScreen extends StatefulWidget {
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
-//  double temprature = result['data'][0]['temp'];
-//   String timeZone = result['data'][0]['timezone'];
 
 class _LocationScreenState extends State<LocationScreen> {
-  int temp = 0;
-  int condition = 0;
-  String cityName = "";
-  String message = "";
-  String icon = "";
-
-  WeatherModel weatherModel = WeatherModel();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    updateUi(widget.result);
-  }
-
-  void updateUi(dynamic weatherdata) {
-    temp = weatherdata['main']['temp'];
-    condition = weatherdata['weather'][0]['id'];
-    cityName = weatherdata['name'];
-    message = weatherModel.getMessage(temp);
-    icon = weatherModel.getWeatherIcon(condition);
-  }
-
   @override
   Widget build(BuildContext context) {
-    double temp = widget.result['data'][0]['temp'];
+    WeatherModel weatherModel = WeatherModel();
+    double temp = widget.result['main']['temp'] - 273;
+    String fTemp = temp.toStringAsFixed(1);
+    int conditionValue = widget.result['weather'][0]['id'];
+    String conditionMessage = weatherModel.getWeatherIcon(conditionValue);
+    String Message = weatherModel.getMessage(temp);
+    String cityName = widget.result['name'];
 
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/city_back.jpg'),
+            image: AssetImage('images/back.jpg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.white.withOpacity(0.8), BlendMode.dstATop),
@@ -61,7 +43,21 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {});
+                    },
+                    child: Icon(
+                      Icons.home,
+                      size: 50.0,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CityScreen()));
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
@@ -74,11 +70,11 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '$temp°',
+                      '$fTemp',
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '$icon',
+                      '$conditionMessage',
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -87,7 +83,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "$message in $cityName!",
+                  "$Message in $cityName ",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),

@@ -51,6 +51,8 @@ flutter:
   assets:
     - images/city_background.jpg
     - images/city_back.jpg
+    - images/back.jpg
+
 
     - images/location_background.jpg
 

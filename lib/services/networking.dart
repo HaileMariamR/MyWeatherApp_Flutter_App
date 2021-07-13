@@ -1,4 +1,4 @@
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AnyNetworkData {
@@ -6,10 +6,12 @@ class AnyNetworkData {
   final String url;
 
   Future getData() async {
-    var data = await get(Uri.parse(url));
+    http.Response data = await http.get(Uri.parse(url));
     if (data.statusCode == 200) {
       var jsondata = jsonDecode(data.body);
       return jsondata;
+    } else {
+      return JsonCodec();
     }
   }
 }
