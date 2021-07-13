@@ -29,13 +29,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
   }
 
   void currentLocationWeatherData() async {
-    // Position position = await Geolocator.getCurrentPosition(
-    //     desiredAccuracy: LocationAccuracy.high);
-    // lon = position.longitude;
-    // lat = position.latitude;
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    lon = position.longitude;
+    lat = position.latitude;
 
     http.Response response = await http.get(Uri.parse(
-        "https://api.openweathermap.org/data/2.5/weather?lat=9.025&lon=38.7469&appid=8b7f58a68137c0497d75668ddf58a1ba"));
+        "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=8b7f58a68137c0497d75668ddf58a1ba"));
 
     var result = jsonDecode(response.body);
 
