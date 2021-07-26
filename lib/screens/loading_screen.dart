@@ -1,58 +1,50 @@
-import 'dart:convert';
-import 'dart:developer';
+// import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:myweatherapp/screens/city_screen.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'location_screen.dart';
-import 'package:myweatherapp/services/location.dart';
-import 'package:http/http.dart' as http;
-import 'package:geolocator/geolocator.dart';
-import 'package:myweatherapp/services/networking.dart';
+// import 'package:flutter/material.dart';
+// import 'package:http/http.dart';
+// import 'package:flutter_spinkit/flutter_spinkit.dart';
+// import 'package:myweatherapp/appstate/AppState.dart';
+// import 'location_screen.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:provider/provider.dart';
 
-class LoadingScreen extends StatefulWidget {
-  @override
-  _LoadingScreenState createState() {
-    return _LoadingScreenState();
-  }
-}
+// class LoadingScreen extends StatefulWidget {
+//   const LoadingScreen({Key? key}) : super(key: key);
 
-class _LoadingScreenState extends State<LoadingScreen> {
-  double lat = 1.0;
-  double lon = 1.0;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    currentLocationWeatherData();
-  }
+//   @override
+//   _LoadingScreenState createState() => _LoadingScreenState();
+// }
 
-  void currentLocationWeatherData() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    lon = position.longitude;
-    lat = position.latitude;
+// class _LoadingScreenState extends State<LoadingScreen> {
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//   }
 
-    http.Response response = await http.get(Uri.parse(
-        "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=8b7f58a68137c0497d75668ddf58a1ba"));
+//   Object result = {};
+//   @override
+//   Widget build(BuildContext context) {
+//     var appstate = Provider.of<CurrentCityWeatherState>(context);
 
-    var result = jsonDecode(response.body);
-
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => LocationScreen(result: result)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-      child: SpinKitRing(
-        color: Colors.white,
-        size: 100,
-      ),
-    ));
-  }
-}
+//     return Scaffold(
+//       appBar: AppBar(),
+//       drawer: Drawer(),
+//       body: Container(
+//         child: Center(
+//           child: MaterialButton(
+//               onPressed: () => {
+//                     appstate.getCurrentCityDataFromApi(),
+//                     result = appstate.getCurrentCityData,
+//                     Navigator.push(
+//                         context,
+//                         MaterialPageRoute(
+//                             builder: (context) =>
+//                                 LocationScreen(result: result)))
+//                   },
+//               child: Text("Get Weather Data")),
+//         ),
+//       ),
+//     );
+//   }
+// }

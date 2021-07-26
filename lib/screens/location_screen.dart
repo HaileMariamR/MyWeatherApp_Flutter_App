@@ -24,6 +24,7 @@ class _LocationScreenState extends State<LocationScreen> {
     String cityName = widget.result['name'];
 
     return Scaffold(
+      appBar: AppBar(),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -39,32 +40,6 @@ class _LocationScreenState extends State<LocationScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {});
-                    },
-                    child: Icon(
-                      Icons.home,
-                      size: 50.0,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CityScreen()));
-                    },
-                    child: Icon(
-                      Icons.location_city,
-                      size: 50.0,
-                    ),
-                  ),
-                ],
-              ),
               Padding(
                 padding: EdgeInsets.only(left: 15.0),
                 child: Row(

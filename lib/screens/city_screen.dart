@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:myweatherapp/utilities/constants.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:developer';
+import 'package:provider/provider.dart';
+import 'package:get/get.dart';
+import 'package:myweatherapp/appstate/AppState.dart';
 import 'location_screen.dart';
 
 class CityScreen extends StatefulWidget {
@@ -14,14 +17,9 @@ class _CityScreenState extends State<CityScreen> {
   final myController = TextEditingController();
 
   @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    var appState = Provider.of<AppState>(context);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -37,51 +35,57 @@ class _CityScreenState extends State<CityScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    await appState.setHomeCityWeatherData();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LocationScreen(
+                                result: appState.getWeatherData[0])));
                   },
                   child: Icon(
-                    Icons.arrow_back_ios,
+                    Icons.home,
                     size: 50.0,
                   ),
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(20.0),
-                child: TextField(
-                  controller: myController,
-                  decoration: InputDecoration(
-                    fillColor: Colors.purple,
-                    hintStyle: TextStyle(color: Colors.black),
-                    hintText: "Enter Country Name",
-                    border: UnderlineInputBorder(),
-                    labelStyle: TextStyle(color: Colors.black87),
-                  ),
-                ),
-              ),
+                  padding: EdgeInsets.all(20.0),
+                  child: TextField(
+                      controller: myController,
+                      maxLines: null,
+                      style: TextStyle(color: Colors.black),
+                      keyboardType: TextInputType.multiline,
+                      decoration: InputDecoration(
+                        hintText: "Enter Country name here ...",
+                        hintStyle: TextStyle(color: Colors.black),
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.0),
+                        ),
+                      ))),
               ElevatedButton(
                 onPressed: () async {
-                  try {
-                    http.Response response = await http.get(Uri.parse(
-                        "https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&appid=8b7f58a68137c0497d75668ddf58a1ba"));
-
-                    var result = jsonDecode(response.body);
-                    if (!result) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  LocationScreen(result: result)));
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
+                  await appState.setWeatherData(myController.text);
+                  // print(appState.getWeatherData[0]['main']);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LocationScreen(
+                              result: appState.getWeatherData[0])));
                 },
                 child: Text(
                   'Get Weather',
                   style: kButtonTextStyle,
                 ),
               ),
+              (!appState.isFetchingApiData)
+                  ? Text("")
+                  : SpinKitRing(
+                      color: Colors.black,
+                      size: 50,
+                    )
             ],
           ),
         ),
